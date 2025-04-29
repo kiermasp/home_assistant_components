@@ -1,0 +1,12 @@
+name: HomeBot Components
+description: HomeBot Components for Home Assistant
+domain: homebot_components
+owner: kiermasp
+repository: kiermasp/home_assistant_components
+version: 1.0.0
+render_readme: true
+content_in_root: false
+filename: homebot_components.zip
+hide_default_branch: true
+persistent_directory: homebot_components
+zip_release: false 
