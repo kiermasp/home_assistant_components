@@ -1,6 +1,7 @@
 """Config flow for HomeBot Components integration."""
 
 from __future__ import annotations
+import logging
 
 import voluptuous as vol
 
@@ -26,6 +27,7 @@ from .const import (
     DEVICE_TYPE_BUTTON,
 )
 
+_LOGGER = logging.getLogger(__name__)
 
 class HomeBotComponentsConfigFlow(config_entries.ConfigFlow):
     """Handle a config flow for HomeBot Components."""
@@ -56,11 +58,8 @@ class HomeBotComponentsConfigFlow(config_entries.ConfigFlow):
             return await self.async_step_blind()
         
         if user_input["device_type"] == DEVICE_TYPE_BUTTON:
-            return await self.async_step_button()
-
-    async def is_matching(self, user_input):
-        """Check if the configuration matches."""
-        return True
+            _LOGGER.warning("Button control not yet implemented")
+            return self.async_abort(reason="not_implemented")
 
     async def async_step_blind(self, user_input=None):
         """Handle the blind configuration step."""
