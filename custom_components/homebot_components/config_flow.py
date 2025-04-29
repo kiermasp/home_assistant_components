@@ -33,7 +33,9 @@ class HomeBotComponentsConfigFlow(config_entries.ConfigFlow):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
+        _LOGGER.debug("Starting user configuration step")
         if user_input is None:
+            _LOGGER.debug("Showing initial configuration form")
             return self.async_show_form(
                 step_id="user",
                 data_schema=vol.Schema(
@@ -51,6 +53,7 @@ class HomeBotComponentsConfigFlow(config_entries.ConfigFlow):
                 ),
             )
 
+        _LOGGER.debug("User selected device type: %s", user_input["device_type"])
         if user_input["device_type"] == DEVICE_TYPE_BLIND:
             return await self.async_step_blind()
         
@@ -60,12 +63,15 @@ class HomeBotComponentsConfigFlow(config_entries.ConfigFlow):
 
     async def async_step_blind(self, user_input=None):
         """Handle the blind configuration step."""
+        _LOGGER.debug("Starting blind configuration step")
         errors = {}
 
         if user_input is not None:
+            _LOGGER.debug("Validating blind configuration: %s", user_input)
             try:
                 # Validate the configuration
                 await self._validate_blind_config(user_input)
+                _LOGGER.debug("Blind configuration validated successfully")
                 return self.async_create_entry(
                     title="External Blind",
                     data={
@@ -74,8 +80,10 @@ class HomeBotComponentsConfigFlow(config_entries.ConfigFlow):
                     },
                 )
             except Exception as err:
+                _LOGGER.error("Error validating blind configuration: %s", str(err))
                 errors["base"] = str(err)
 
+        _LOGGER.debug("Showing blind configuration form")
         return self.async_show_form(
             step_id="blind",
             data_schema=vol.Schema(
@@ -121,7 +129,10 @@ class HomeBotComponentsConfigFlow(config_entries.ConfigFlow):
 
     async def _validate_blind_config(self, user_input):
         """Validate the blind configuration."""
+        _LOGGER.debug("Validating blind configuration: %s", user_input)
         if user_input["up_switch"] == user_input["down_switch"]:
+            _LOGGER.error("Up and down switches are the same: %s", user_input["up_switch"])
             raise ValueError("Up and down switches must be different")
         if user_input["up_trigger"] == user_input["down_trigger"]:
+            _LOGGER.error("Up and down triggers are the same: %s", user_input["up_trigger"])
             raise ValueError("Up and down triggers must be different") 

@@ -17,15 +17,18 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up External Blinds from a config entry."""
     
+    _LOGGER.debug("Setting up HomeBot Components with config: %s", entry.data)
     _LOGGER.info("Setting up HomeBot Components")
 
     hass.data.setdefault(DOMAIN, {})
 
     # Store the configuration
     hass.data[DOMAIN][entry.entry_id] = entry.data
+    _LOGGER.debug("Stored configuration for entry_id: %s", entry.entry_id)
 
     # Set up the blind control
     await setup_blind_control(hass, entry)
+    _LOGGER.debug("Blind control setup completed")
 
     return True
 
@@ -33,7 +36,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
 
-    _LOGGER.info("Setting async_unload_entry")
+    _LOGGER.debug("Unloading HomeBot Components for entry_id: %s", entry.entry_id)
+    _LOGGER.info("Unloading HomeBot Components")
     
     hass.data[DOMAIN].pop(entry.entry_id)
+    _LOGGER.debug("Removed configuration for entry_id: %s", entry.entry_id)
     return True
