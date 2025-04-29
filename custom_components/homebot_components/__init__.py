@@ -5,11 +5,11 @@ from __future__ import annotations
 import logging
 
 from homeassistant.config_entries import ConfigEntry
-
 from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
 from .blind_controller import setup_blind_control
+from .config_flow import HomeBotComponentsConfigFlow
 
 _LOGGER = logging.getLogger(__name__)
 

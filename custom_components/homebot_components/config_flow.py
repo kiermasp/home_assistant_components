@@ -22,11 +22,12 @@ from .const import (
     DEFAULT_OPEN_TIME,
     DEVICE_TYPE_BLIND,
     DEVICE_TYPE_BUTTON,
+    DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
-class HomeBotComponentsConfigFlow(config_entries.ConfigFlow):
+class HomeBotComponentsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for HomeBot Components."""
 
     VERSION = 1
