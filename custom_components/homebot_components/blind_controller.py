@@ -1,4 +1,4 @@
-"""The External Blinds integration."""
+"""Blind controller for HomeBot Components."""
 
 from __future__ import annotations
 
@@ -13,35 +13,11 @@ from homeassistant.const import (
     STATE_ON,
 )
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers import entity_registry
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_state_change_event
-
-from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up External Blinds from a config entry."""
-    hass.data.setdefault(DOMAIN, {})
-
-    # Store the configuration
-    hass.data[DOMAIN][entry.entry_id] = entry.data
-
-    # Set up the blind control
-    await _setup_blind_control(hass, entry)
-
-    return True
-
-
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload a config entry."""
-    hass.data[DOMAIN].pop(entry.entry_id)
-    return True
-
-
-async def _setup_blind_control(hass: HomeAssistant, entry: ConfigEntry) -> None:
+async def setup_blind_control(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Set up the blind control logic."""
     config = entry.data
 
@@ -54,9 +30,9 @@ async def _setup_blind_control(hass: HomeAssistant, entry: ConfigEntry) -> None:
 
         entity_id = event.data.get("entity_id")
         if entity_id == config["up_trigger"] and new_state.state == STATE_ON:
-            await _control_blind(hass, config["up_switch"], config["open_time"])
+            await control_blind(hass, config["up_switch"], config["open_time"])
         elif entity_id == config["down_trigger"] and new_state.state == STATE_ON:
-            await _control_blind(hass, config["down_switch"], config["close_time"])
+            await control_blind(hass, config["down_switch"], config["close_time"])
 
     # Listen for state changes on the trigger entities
     async_track_state_change_event(
@@ -65,8 +41,7 @@ async def _setup_blind_control(hass: HomeAssistant, entry: ConfigEntry) -> None:
         _handle_trigger_event,
     )
 
-
-async def _control_blind(
+async def control_blind(
     hass: HomeAssistant, switch_entity: str, duration: int
 ) -> None:
     """Control the blind by turning the switch on for a specified duration."""
@@ -87,4 +62,4 @@ async def _control_blind(
                 {ATTR_ENTITY_ID: switch_entity},
             ),
         )
-    )
+    ) 

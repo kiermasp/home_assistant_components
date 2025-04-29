@@ -1,4 +1,4 @@
-"""Config flow for External Blinds integration."""
+"""Config flow for HomeBot Components integration."""
 
 from __future__ import annotations
 
@@ -9,6 +9,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry
 from homeassistant.helpers.selector import (
+    SelectSelector,
+    SelectSelectorConfig,
+    SelectSelectorMode,
     EntitySelector,
     EntitySelectorConfig,
     NumberSelector,
@@ -17,34 +20,68 @@ from homeassistant.helpers.selector import (
 )
 
 from .const import (
-    DOMAIN,
     DEFAULT_CLOSE_TIME,
     DEFAULT_OPEN_TIME,
+    DEVICE_TYPE_BLIND,
+    DEVICE_TYPE_BUTTON,
 )
 
 
-class ExternalBlindsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for External Blinds."""
+class HomeBotComponentsConfigFlow(config_entries.ConfigFlow):
+    """Handle a config flow for HomeBot Components."""
 
     VERSION = 1
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
+        if user_input is None:
+            return self.async_show_form(
+                step_id="user",
+                data_schema=vol.Schema(
+                    {
+                        vol.Required("device_type"): SelectSelector(
+                            SelectSelectorConfig(
+                                options=[
+                                    {"value": DEVICE_TYPE_BLIND, "label": "External Blind"},
+                                    {"value": DEVICE_TYPE_BUTTON, "label": "Button Control"},
+                                ],
+                                mode=SelectSelectorMode.DROPDOWN,
+                            )
+                        ),
+                    }
+                ),
+            )
+
+        if user_input["device_type"] == DEVICE_TYPE_BLIND:
+            return await self.async_step_blind()
+        
+        if user_input["device_type"] == DEVICE_TYPE_BUTTON:
+            return await self.async_step_button()
+
+    async def is_matching(self, user_input):
+        """Check if the configuration matches."""
+        return True
+
+    async def async_step_blind(self, user_input=None):
+        """Handle the blind configuration step."""
         errors = {}
 
         if user_input is not None:
             try:
                 # Validate the configuration
-                await self._validate_config(user_input)
+                await self._validate_blind_config(user_input)
                 return self.async_create_entry(
-                    title="External Blinds",
-                    data=user_input,
+                    title="External Blind",
+                    data={
+                        "device_type": DEVICE_TYPE_BLIND,
+                        **user_input,
+                    },
                 )
             except Exception as err:
                 errors["base"] = str(err)
 
         return self.async_show_form(
-            step_id="user",
+            step_id="blind",
             data_schema=vol.Schema(
                 {
                     vol.Required("up_switch"): EntitySelector(
@@ -86,14 +123,9 @@ class ExternalBlindsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def _validate_config(self, user_input):
-        """Validate the configuration."""
-        # Check if the same entity is not used for both up and down
+    async def _validate_blind_config(self, user_input):
+        """Validate the blind configuration."""
         if user_input["up_switch"] == user_input["down_switch"]:
             raise ValueError("Up and down switches must be different")
         if user_input["up_trigger"] == user_input["down_trigger"]:
-            raise ValueError("Up and down triggers must be different")
-
-    async def is_matching(self, user_input):
-        """Check if the configuration matches."""
-        return True
+            raise ValueError("Up and down triggers must be different") 
