@@ -1,0 +1,11 @@
+{
+  "domain": "external_blinds",
+  "name": "External Blinds",
+  "documentation": "https://github.com/yourusername/home_assistant_blinds",
+  "dependencies": ["selector"],
+  "codeowners": ["@yourusername"],
+  "requirements": [],
+  "version": "1.0.0",
+  "config_flow": true,
+  "iot_class": "local_push"
+} 
