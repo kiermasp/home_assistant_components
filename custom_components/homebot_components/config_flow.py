@@ -6,9 +6,6 @@ import logging
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import entity_registry
 from homeassistant.helpers.selector import (
     SelectSelector,
     SelectSelectorConfig,
