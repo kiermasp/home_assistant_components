@@ -2,7 +2,7 @@
   "domain": "homebot_components",
   "name": "HomeBot Components",
   "documentation": "https://github.com/kiermasp/home_assistant_components",
-  "dependencies": ["selector"],
+  "dependencies": [],
   "codeowners": ["@kiermasp"],
   "integration_type": "hub",
   "requirements": [],
