@@ -8,7 +8,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
-from .blind_controller import setup_blind_control
 from .config_flow import HomeBotComponentsConfigFlow
 from .blind import async_setup_entry as async_setup_blind
 
@@ -26,10 +25,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Store the configuration
     hass.data[DOMAIN][entry.entry_id] = entry.data
     _LOGGER.debug("Stored configuration for entry_id: %s", entry.entry_id)
-
-    # Set up the blind control
-    await setup_blind_control(hass, entry)
-    _LOGGER.debug("Blind control setup completed")
 
     # Set up the blind entity
     await async_setup_blind(hass, entry, hass.data[DOMAIN][entry.entry_id])
