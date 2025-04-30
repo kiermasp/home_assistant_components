@@ -26,7 +26,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = entry.data
     _LOGGER.debug("Stored configuration for entry_id: %s", entry.entry_id)
 
-    # Set up the blind entity
+    # Set up the blind entity 
     await async_setup_blind(hass, entry, hass.data[DOMAIN][entry.entry_id])
     _LOGGER.debug("Blind entity setup completed")
 
